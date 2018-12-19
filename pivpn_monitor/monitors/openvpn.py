@@ -32,7 +32,7 @@ class OpenVPNMonitor():
         new_connections = dict(new_connections)
 
         if len(new_connections):
-            message = "found {} new connection(s):\n"
+            message = "found {} new connection(s):\n".format(len(new_connections))
             for client, client_connections in new_connections.items():
                 for real_address, details in client_connections.items():
                     message += "user {} from address {}".format(details['Common Name'],
