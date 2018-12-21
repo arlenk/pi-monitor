@@ -88,7 +88,7 @@ def _process_config(config):
         if field not in config:
             raise ValueError("required field {} not found in config file".format(field))
 
-    status_file = Path(config['openvpn-status-file'])
+    status_file = Path(config['status_file'])
 
     if not status_file.exists():
         raise ValueError("could not find status file: {}".format(status_file))
