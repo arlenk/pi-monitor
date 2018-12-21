@@ -8,11 +8,11 @@ class OpenVPNMonitor():
 
     """
     def __init__(self, config):
-        _verify_config(config)
+        config = _process_config(config)
 
         self.config = config
         self.listeners = []
-        self._openvpn_status_file = config.get("openvpn-status-file")
+        self._openvpn_status_file = config.get("status_file")
         self.connections = self.get_current_connections()
 
     def add_listener(self, listener):
@@ -75,21 +75,26 @@ def _read_openvpn_status_file(status_file: Path) -> dict:
     return clients
 
 
-
-def _verify_config(config):
+def _process_config(config):
     """
     Make sure config object has required values
 
     """
-    if 'openvpn-status-file' not in config:
-        raise ValueError("openvpn-status-file value not set in config")
+    required_fields = [
+        "status_file",
+    ]
+
+    for field in required_fields:
+        if field not in config:
+            raise ValueError("required field {} not found in config file".format(field))
 
     status_file = Path(config['openvpn-status-file'])
 
     if not status_file.exists():
         raise ValueError("could not find status file: {}".format(status_file))
 
-    config['openvpn-status-file'] = status_file
+    config['status_file'] = status_file
+    return config
 
 
 
