@@ -1,4 +1,4 @@
-import twilio as tw
+import twilio.rest as tr
 
 
 class Twilio():
@@ -11,10 +11,20 @@ class Twilio():
 
 
     def act(self, event):
-        pass
+        print("{} acting on {}".format(__name__, event))
 
+        client = tr.Client(
+            self.account_sid,
+            self.auth_token
+        )
 
+        message = client.messages.create(
+            to=self.to_phone,
+            from_=self.from_phone,
+            body="pivpn update\n" + event
+        )
 
+        return message
 
 
 def _process_config(config):
