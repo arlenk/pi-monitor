@@ -33,6 +33,33 @@ def load_monitors(config):
     return monitors
 
 
+def load_actions(config):
+    """
+    Load actions defined in config dict
+
+    :param config: dict
+    :return: dict
+    """
+    # TODO: move validation to its own function
+    if 'actions' not in config:
+        raise ValueError("no actions defined i config file!")
+
+    config = copy.deepcopy(config['actions'])
+    actions = dict()
+
+    for name, values in config.items():
+        print("loading: {}".format(name))
+        if 'class' not in values:
+            raise ValueError("no class defined for monitor {}".format(name))
+
+        cls = values.pop('class')
+        c = _try_importing_class(cls)
+        action = c(values)
+        actions[name] = action
+
+    return actions
+
+
 def _try_importing_class(name):
     """
     Try import a class such as "monitors.openvpn.OpenVPNMonitor"
