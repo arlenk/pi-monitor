@@ -1,18 +1,28 @@
 # -*- coding: utf-8 -*-
 import time
 
-import monitors.openvpn as pmo
-import actions.twilio as pt
+import configuration.config as cc
+import configuration.loader as cl
 
 
 """Main module."""
 def main():
-    config = {'openvpn-status-file': 'openvpn-status.log'}
-    monitor = pmo.OpenVPNMonitor(config)
+    config = cc.load_configuration("pivpn_monitor.cfg", ".env")
+    monitors = cl.load_monitors(config)
+    actions = cl.load_actions(config)
 
     while True:
         time.sleep(60)
-        changes, message = monitor.run()
+        for monitor_name, monitor in monitors.items():
+            print("checking monitor: {}".format(monitor_name))
+            changes, message = monitor.run()
 
-        if changes:
-            print("found changes: {}".format(message))
+            if changes:
+                print("found changes: {}".format(message))
+
+                for action_name, action in actions.items():
+                    print("firing action {}".format(action_name))
+
+                    action.act(message)
+
+

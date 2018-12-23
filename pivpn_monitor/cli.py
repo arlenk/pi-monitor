@@ -3,13 +3,13 @@
 """Console script for pivpn_alerts."""
 import sys
 import click
-import pivpn_alerts as pa
+import pivpn_monitor as pm
 
 
 @click.command()
 def main(args=None):
     """Console script for pivpn_alerts."""
-    pa.main()
+    pm.main()
     return 0
 
 
