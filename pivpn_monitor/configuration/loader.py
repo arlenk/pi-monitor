@@ -72,7 +72,7 @@ def _try_importing_class(name):
     print("trying to import module: {}".format(module))
 
     # TODO: how do we avoid hardcoding this
-    module = "{}".format(module)
+    module = "pivpn_monitor.{}".format(module)
     m = importlib.import_module(module)
 
     if not hasattr(m, cls):

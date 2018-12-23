@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 
-import configuration.config as cc
-import configuration.loader as cl
+import pivpn_monitor.configuration.config as cc
+import pivpn_monitor.configuration.loader as cl
 
 
 """Main module."""
