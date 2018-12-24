@@ -48,7 +48,7 @@ setup(
     include_package_data=True,
     keywords='pivpn_monitor',
     name='pivpn_monitor',
-    packages=find_packages(include=['pivpn_monitor']),
+    packages=find_packages(),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
