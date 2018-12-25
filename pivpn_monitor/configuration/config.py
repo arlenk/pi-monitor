@@ -20,7 +20,7 @@ def load_configuration(config_file, dotenv_file=None, include_os_env=True):
     """
     config_file = Path(config_file)
     if not config_file.exists():
-        raise IOError("could not find .env file: {}".format(config_file))
+        raise IOError("could not find config file: {}".format(config_file))
 
     if dotenv_file:
         dotenv_file = Path(dotenv_file)
