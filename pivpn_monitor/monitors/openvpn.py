@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from collections import defaultdict
 import subprocess as sb
@@ -143,6 +144,12 @@ def _call_openvpn_status_process(status_command: str) -> dict:
     for line in current_status.splitlines():
         print("processing line: {}".format(line))
         line = line.strip()
+
+        # remove escape characters (pivpn bolds some output)
+        # re from https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python
+        # todo: find better way to parse output of pivpn
+        ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
+        line = ansi_escape.sub('', line)
 
         # ignore blank lines and comments
         if not line or line.startswith(":"):
