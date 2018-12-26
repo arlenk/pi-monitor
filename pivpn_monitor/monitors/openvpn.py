@@ -138,8 +138,10 @@ def _call_openvpn_status_process(status_command: str) -> dict:
 
     # todo: check for errors from res... also add a timeout?
     current_status = res.stdout.decode('utf-8')
+    print("command returned\n:{}".format(current_status))
 
     for line in current_status.splitlines():
+        print("processing line: {}".format(line))
         line = line.strip()
 
         # ignore blank lines and comments
