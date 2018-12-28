@@ -211,6 +211,7 @@ def _parse_openvpn_management_status(status: str) -> dict:
         line = line.strip()
         if line.startswith("HEADER\tCLIENT_LIST"):
             column_names = line.split('\t')[2:]  # drop HEADER and CLIENT_LIST
+
         elif line.startswith("CLIENT_LIST"):
             client_values = line.split('\t')[1:]
             client = dict(zip(column_names, client_values))
@@ -239,7 +240,6 @@ def _call_openvpn_status_process(status_command: str) -> dict:
 
     for line in current_status.splitlines():
         print("processing line: {}".format(line))
-        line = line.strip()
 
         # remove escape characters (pivpn bolds some output)
         # re from https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python
@@ -247,10 +247,12 @@ def _call_openvpn_status_process(status_command: str) -> dict:
         ansi_escape = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]')
         line = ansi_escape.sub('', line)
 
-        # ignore blank lines and comments
-        if not line or line.startswith(":"):
+        # ignore blank lines and comments (lines that start with a blank are
+        # part of heading, but not important for us)
+        if not line or line.startswith(":") or line.startswith(" "):
             continue
 
+        line = line.strip()
         if line.startswith("Name"):
             column_names = line.split('\t')
         else:
