@@ -249,7 +249,7 @@ def _call_openvpn_status_process(status_command: str) -> dict:
 
         # ignore blank lines and comments (lines that start with a blank are
         # part of heading, but not important for us)
-        if not line or line.startswith(":") or line.startswith(" "):
+        if not line or line.startswith(":") or line.startswith((" ", "\t")):
             continue
 
         line = line.strip()
