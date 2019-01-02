@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 
 import toml
+from . import loader as cl
 
 
 def load_configuration(config_file, dotenv_file=None, include_os_env=True):
@@ -36,6 +37,11 @@ def load_configuration(config_file, dotenv_file=None, include_os_env=True):
         env.update(dotenv)
 
     config = _parse_config(config_file, env)
+    monitors = cl.load_monitors(config)
+    actions = cl.load_actions(config)
+
+    config['monitors'] = monitors
+    config['actions'] = actions
 
     return config
 
