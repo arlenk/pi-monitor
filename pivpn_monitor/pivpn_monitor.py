@@ -2,14 +2,13 @@
 import time
 
 import pivpn_monitor.configuration.config as cc
-import pivpn_monitor.configuration.loader as cl
 
 
 """Main module."""
 def main():
     config = cc.load_configuration("pivpn_monitor.cfg", ".env")
-    monitors = cl.load_monitors(config)
-    actions = cl.load_actions(config)
+    monitors = config['monitors']
+    actions = config['actions']
 
     while True:
         time.sleep(60)

@@ -42,6 +42,42 @@ def load_configuration(config_file, dotenv_file=None, include_os_env=True):
 
     config['monitors'] = monitors
     config['actions'] = actions
+    config = configure_events(config)
+
+    return config
+
+
+def configure_events(config):
+    """
+    Attach actions to monitors based on event configuration
+
+    :param config:
+    :return:
+    """
+    events = config.get('events', {})
+    monitors = config.get('monitors', {})
+    actions = config.get('actions', {})
+
+    if not events:
+        raise ValueError("no events found in configuration")
+
+    for event_name, info in events.items():
+        monitor_name = info['monitor']
+        action_name = info['action']
+
+        if monitor_name not in monitors:
+            raise ValueError("monitor {} not found "
+                             "(for event {})".format(monitor_name, event_name))
+
+        if action_name not in actions:
+            raise ValueError("action {} not found "
+                             "(for event {})".format(action_name, event_name))
+
+        event_monitor = monitors[monitor_name]
+        event_action = actions[action_name]
+
+        event_monitor.add_listener(event_action)
+        print("adding {} to {}".format(event_action, event_monitor))
 
     return config
 
