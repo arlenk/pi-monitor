@@ -3,7 +3,7 @@ from collections import defaultdict
 from abc import ABCMeta, abstractmethod
 
 
-class ClientConnectionMonitor(metaclass=ABCMeta):
+class ClientMonitor(metaclass=ABCMeta):
     """
     Monitor client connections
 

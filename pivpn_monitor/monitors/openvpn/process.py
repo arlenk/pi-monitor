@@ -2,10 +2,10 @@ import re
 import subprocess as sb
 from collections import defaultdict
 
-from .common import ClientConnectionMonitor
+from .common import ClientMonitor
 
 
-class ProcessMonitor(ClientConnectionMonitor):
+class ProcessMonitor(ClientMonitor):
     """
     Monitor events by calling a separate process that will return current openvpn status
 

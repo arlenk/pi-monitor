@@ -2,10 +2,10 @@ from pathlib import Path
 
 from collections import defaultdict
 
-from .common import ClientConnectionMonitor
+from .common import ClientMonitor
 
 
-class FileMonitor(ClientConnectionMonitor):
+class FileMonitor(ClientMonitor):
     """
     Monitor events by reading log file (may require root privileges)
 

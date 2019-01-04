@@ -1,50 +1,21 @@
 import socket
 from collections import defaultdict
 
-from .common import process_config
+from .common import ClientMonitor
 
 
-class ManagementInterfaceMonitor():
+class ManagementInterfaceMonitor(ClientMonitor):
     """
     Monitor events by connecting to openvpn management interface
 
     """
 
     def __init__(self, config):
-        config = process_config(config)
+        super().__init__(config)
 
-        self.config = config
-        self.listeners = []
         self._openvpn_management_host = config.get("management_host", "localhost")
         self._openvpn_management_port = config.get("management_port")
         self.connections = self.get_current_connections()
-
-    def add_listener(self, listener):
-        self.listeners.append(listener)
-
-    def run(self):
-        prior_connections = self.connections
-        current_connections = self.get_current_connections()
-        self.connections = current_connections
-
-        new_connections = defaultdict(dict)
-        for client, client_connections in current_connections.items():
-            for real_address, details in client_connections.items():
-                if (client not in prior_connections or
-                   real_address not in prior_connections[client]):
-                    new_connections[client][real_address] = details
-        new_connections = dict(new_connections)
-
-        if len(new_connections):
-            message = "found {} new connection(s):\n".format(len(new_connections))
-            for client, client_connections in new_connections.items():
-                for real_address, details in client_connections.items():
-                    message += "user {} from address {}".format(details['Common Name'],
-                                                                details['Real Address'])
-        else:
-            message = ''
-
-        return len(new_connections), message
 
     def get_current_connections(self):
         """
