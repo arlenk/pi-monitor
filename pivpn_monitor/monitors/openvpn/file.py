@@ -13,7 +13,7 @@ class FileMonitor(ClientMonitor):
 
     def __init__(self, config):
         super().__init__(config,
-                         requirxsed_fields=['status_file'])
+                         required_fields=['status_file'])
 
         self._openvpn_status_file = config.get("status_file")
         self.connections = self.get_current_connections()
