@@ -68,6 +68,10 @@ def call_openvpn_status_process(status_command: str) -> dict:
         if not line or line.startswith(":") or line.startswith((" ", "\t")):
             continue
 
+        # ignore 'no clients connected line' if.. no clients are connected
+        if line.startswith("No Clients Connected!"):
+            continue
+
         line = line.strip()
         if line.startswith("Name"):
             column_names = line.split('\t')
