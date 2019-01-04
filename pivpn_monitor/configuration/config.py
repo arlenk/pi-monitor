@@ -42,42 +42,42 @@ def load_configuration(config_file, dotenv_file=None, include_os_env=True):
 
     config['monitors'] = monitors
     config['actions'] = actions
-    config = configure_events(config)
+    config = configure_listeners(config)
 
     return config
 
 
-def configure_events(config):
+def configure_listeners(config):
     """
-    Attach actions to monitors based on event configuration
+    Attach listeners (actions) to monitors
 
     :param config:
     :return:
     """
-    events = config.get('events', {})
+    listeners = config.get('listeners', {})
     monitors = config.get('monitors', {})
     actions = config.get('actions', {})
 
-    if not events:
-        raise ValueError("no events found in configuration")
+    if not listeners:
+        raise ValueError("no listeners found in configuration")
 
-    for event_name, info in events.items():
-        monitor_name = info['monitor']
-        action_name = info['action']
+    for listener_name, listener_info in listeners.items():
+        monitor_name = listener_info['monitor']
+        action_name = listener_info['action']
 
         if monitor_name not in monitors:
             raise ValueError("monitor {} not found "
-                             "(for event {})".format(monitor_name, event_name))
+                             "(for listener {})".format(monitor_name, listener_name))
 
         if action_name not in actions:
             raise ValueError("action {} not found "
-                             "(for event {})".format(action_name, event_name))
+                             "(for listener {})".format(action_name, listener_name))
 
-        event_monitor = monitors[monitor_name]
-        event_action = actions[action_name]
+        monitor = monitors[monitor_name]
+        action = actions[action_name]
 
-        event_monitor.add_listener(event_action)
-        print("adding {} to {}".format(event_action, event_monitor))
+        monitor.add_listener(action)
+        print("adding action {} to monitor {}".format(action, monitor))
 
     return config
 
