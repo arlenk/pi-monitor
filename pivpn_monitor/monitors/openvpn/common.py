@@ -1,6 +1,7 @@
 from pathlib import Path
 from collections import defaultdict
 from abc import ABCMeta, abstractmethod
+from typing import List
 
 
 class ClientMonitor(metaclass=ABCMeta):
@@ -9,8 +10,8 @@ class ClientMonitor(metaclass=ABCMeta):
 
     """
 
-    def __init__(self, config: dict):
-        config = process_config(config)
+    def __init__(self, config: dict, required_fields: List[str]):
+        config = process_config(config, required_fields)
 
         self.config = config
         self.listeners = dict()
@@ -54,15 +55,11 @@ class ClientMonitor(metaclass=ABCMeta):
         pass
 
 
-def process_config(config: dict) -> dict:
+def process_config(config: dict, required_fields: List[str]) -> dict:
     """
     Make sure config object has required values
 
     """
-    required_fields = [
-        "status_file",
-    ]
-
     for field in required_fields:
         if field not in config:
             raise ValueError("required field {} not found in config file".format(field))

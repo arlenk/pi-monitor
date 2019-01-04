@@ -12,7 +12,8 @@ class ProcessMonitor(ClientMonitor):
     """
 
     def __init__(self, config):
-        super().__init__(config)
+        super().__init__(config,
+                         required_fields=['status_command'])
 
         self._openvpn_status_process = config.get("status_command")
         self.connections = self.get_current_connections()

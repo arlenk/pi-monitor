@@ -11,7 +11,8 @@ class ManagementInterfaceMonitor(ClientMonitor):
     """
 
     def __init__(self, config):
-        super().__init__(config)
+        super().__init__(config,
+                         required_fields=['management_port'])
 
         self._openvpn_management_host = config.get("management_host", "localhost")
         self._openvpn_management_port = config.get("management_port")
