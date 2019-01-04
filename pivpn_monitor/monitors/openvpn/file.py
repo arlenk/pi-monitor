@@ -1,6 +1,6 @@
-from pathlib import Path
-
 from collections import defaultdict
+from pathlib import Path
+from typing import List
 
 from .common import ClientMonitor
 
@@ -12,22 +12,40 @@ class FileMonitor(ClientMonitor):
     """
 
     def __init__(self, config):
-        super().__init__(config,
-                         required_fields=['status_file'])
-
+        config = process_config(config,
+                                required_fields=['status_file'])
         self._openvpn_status_file = config.get("status_file")
-        self.connections = self.get_current_connections()
+
+        super().__init__(config)
 
     def get_current_connections(self) -> dict:
         """
         List of users currently connected
 
         """
-        connections = _read_openvpn_status_file(self._openvpn_status_file)
+        connections = read_openvpn_status_file(self._openvpn_status_file)
         return connections
 
 
-def _read_openvpn_status_file(status_file: Path) -> dict:
+def process_config(config: dict, required_fields: List[str]) -> dict:
+    """
+    Make sure config object has required values
+
+    """
+    for field in required_fields:
+        if field not in config:
+            raise ValueError("required field {} not found in config file".format(field))
+
+    status_file = Path(config['status_file'])
+
+    if not status_file.exists():
+        raise ValueError("could not find status file: {}".format(status_file))
+
+    config['status_file'] = status_file
+    return config
+
+
+def read_openvpn_status_file(status_file: Path) -> dict:
     """
     Read list of currently connected clients from status file
 

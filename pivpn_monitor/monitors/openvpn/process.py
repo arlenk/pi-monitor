@@ -1,6 +1,7 @@
 import re
 import subprocess as sb
 from collections import defaultdict
+from typing import List
 
 from .common import ClientMonitor
 
@@ -12,22 +13,34 @@ class ProcessMonitor(ClientMonitor):
     """
 
     def __init__(self, config):
-        super().__init__(config,
-                         required_fields=['status_command'])
-
+        config = process_config(config,
+                                required_fields=['status_command'])
         self._openvpn_status_process = config.get("status_command")
-        self.connections = self.get_current_connections()
+
+        super().__init__(config)
 
     def get_current_connections(self) -> dict:
         """
         List of users currently connected
 
         """
-        connections = _call_openvpn_status_process(self._openvpn_status_process)
+        connections = call_openvpn_status_process(self._openvpn_status_process)
         return connections
 
 
-def _call_openvpn_status_process(status_command: str) -> dict:
+def process_config(config: dict, required_fields: List[str]) -> dict:
+    """
+    Make sure config object has required values
+
+    """
+    for field in required_fields:
+        if field not in config:
+            raise ValueError("required field {} not found in config file".format(field))
+
+    return config
+
+
+def call_openvpn_status_process(status_command: str) -> dict:
     """
     Call status command and parse list of currently connected clients from results
 

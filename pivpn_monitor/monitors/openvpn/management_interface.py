@@ -1,5 +1,6 @@
 import socket
 from collections import defaultdict
+from typing import List
 
 from .common import ClientMonitor
 
@@ -11,12 +12,13 @@ class ManagementInterfaceMonitor(ClientMonitor):
     """
 
     def __init__(self, config):
-        super().__init__(config,
-                         required_fields=['management_port'])
-
+        config = process_config(config,
+                                required_fields=['management_port'])
         self._openvpn_management_host = config.get("management_host", "localhost")
         self._openvpn_management_port = config.get("management_port")
-        self.connections = self.get_current_connections()
+
+        super().__init__(config)
+
 
     def get_current_connections(self):
         """
@@ -43,11 +45,23 @@ class ManagementInterfaceMonitor(ClientMonitor):
         status = status.decode('utf8')
         print("received status: {}".format(status))
 
-        connections = _parse_openvpn_management_status(status)
+        connections = parse_openvpn_management_status(status)
         return connections
 
 
-def _parse_openvpn_management_status(status: str) -> dict:
+def process_config(config: dict, required_fields: List[str]) -> dict:
+    """
+    Make sure config object has required values
+
+    """
+    for field in required_fields:
+        if field not in config:
+            raise ValueError("required field {} not found in config file".format(field))
+
+    return config
+
+
+def parse_openvpn_management_status(status: str) -> dict:
     """
     Read list of currently connected clients from status file
 

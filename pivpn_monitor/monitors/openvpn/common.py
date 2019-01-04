@@ -1,7 +1,5 @@
-from pathlib import Path
-from collections import defaultdict
 from abc import ABCMeta, abstractmethod
-from typing import List
+from collections import defaultdict
 
 
 class ClientMonitor(metaclass=ABCMeta):
@@ -9,12 +7,10 @@ class ClientMonitor(metaclass=ABCMeta):
     Monitor client connections
 
     """
-
-    def __init__(self, config: dict, required_fields: List[str]):
-        config = process_config(config, required_fields)
-
+    def __init__(self, config: dict):
         self.config = config
         self.listeners = dict()
+        self.connections = self.get_current_connections()
 
     def add_listener(self, name: str, action):
         """
@@ -55,19 +51,3 @@ class ClientMonitor(metaclass=ABCMeta):
         pass
 
 
-def process_config(config: dict, required_fields: List[str]) -> dict:
-    """
-    Make sure config object has required values
-
-    """
-    for field in required_fields:
-        if field not in config:
-            raise ValueError("required field {} not found in config file".format(field))
-
-    status_file = Path(config['status_file'])
-
-    if not status_file.exists():
-        raise ValueError("could not find status file: {}".format(status_file))
-
-    config['status_file'] = status_file
-    return config
