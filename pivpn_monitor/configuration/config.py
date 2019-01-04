@@ -76,7 +76,7 @@ def configure_listeners(config):
         monitor = monitors[monitor_name]
         action = actions[action_name]
 
-        monitor.add_listener(action)
+        monitor.add_listener(listener_name, action)
         print("adding action {} to monitor {}".format(action, monitor))
 
     return config

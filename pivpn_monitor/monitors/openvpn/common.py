@@ -13,10 +13,17 @@ class ClientMonitor(metaclass=ABCMeta):
         config = process_config(config)
 
         self.config = config
-        self.listeners = []
+        self.listeners = dict()
 
-    def add_listener(self, listener):
-        self.listeners.append(listener)
+    def add_listener(self, name: str, action):
+        """
+        Add action as a listener to events from this monitor
+
+        :param name:
+        :param action:
+        :return:
+        """
+        self.listeners[name] = action
 
     def run(self):
         prior_connections = self.connections
