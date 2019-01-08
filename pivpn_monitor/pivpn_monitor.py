@@ -14,14 +14,14 @@ def main():
         time.sleep(60)
         for monitor_name, monitor in monitors.items():
             print("checking monitor: {}".format(monitor_name))
-            changes, message = monitor.run()
+            events = monitor.run()
 
-            if changes:
-                print("found changes: {}".format(message))
+            for event in events:
+                print("found event: {}".format(event))
 
                 for action_name, action in actions.items():
                     print("firing action {}".format(action_name))
 
-                    action.act(message)
+                    action.act(event)
 
 

@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
+from pivpn_monitor.core import Event
 
 
 class ClientMonitor(metaclass=ABCMeta):
@@ -29,16 +30,18 @@ class ClientMonitor(metaclass=ABCMeta):
 
         new, dropped = compare_connections(prior, current)
 
-        if len(new):
+        events = []
+        if new:
             message = "found {} new connection(s):\n".format(len(new))
             for client, client_connections in new.items():
                 for real_address, details in client_connections.items():
                     message += "user {} from address {}".format(details['Common Name'],
                                                                 details['Real Address'])
-        else:
-            message = ''
+            events.append(
+                Event(message, dict(new=new))
+            )
 
-        return len(new), message
+        return events
 
     @abstractmethod
     def get_current_connections(self) -> dict:

@@ -1,4 +1,5 @@
 import twilio.rest as tr
+from pivpn_monitor.core import Event
 
 
 class Twilio():
@@ -10,7 +11,7 @@ class Twilio():
         self.to_phone = config['to_phone']
 
 
-    def act(self, event):
+    def act(self, event: Event):
         print("{} acting on {}".format(__name__, event))
 
         client = tr.Client(
@@ -21,7 +22,7 @@ class Twilio():
         message = client.messages.create(
             to=self.to_phone,
             from_=self.from_phone,
-            body="pivpn update\n" + event
+            body="pivpn update\n" + event.message
         )
 
         return message
