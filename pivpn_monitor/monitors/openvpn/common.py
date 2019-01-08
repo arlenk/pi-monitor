@@ -23,31 +23,58 @@ class ClientMonitor(metaclass=ABCMeta):
         self.listeners[name] = action
 
     def run(self):
-        prior_connections = self.connections
-        current_connections = self.get_current_connections()
-        self.connections = current_connections
+        prior = self.connections
+        current = self.get_current_connections()
+        self.connections = current
 
-        new_connections = defaultdict(dict)
-        for client, client_connections in current_connections.items():
-            for real_address, details in client_connections.items():
-                if (client not in prior_connections or
-                   real_address not in prior_connections[client]):
-                    new_connections[client][real_address] = details
-        new_connections = dict(new_connections)
+        new, dropped = compare_connections(prior, current)
 
-        if len(new_connections):
-            message = "found {} new connection(s):\n".format(len(new_connections))
-            for client, client_connections in new_connections.items():
+        if len(new):
+            message = "found {} new connection(s):\n".format(len(new))
+            for client, client_connections in new.items():
                 for real_address, details in client_connections.items():
                     message += "user {} from address {}".format(details['Common Name'],
                                                                 details['Real Address'])
         else:
             message = ''
 
-        return len(new_connections), message
+        return len(new), message
 
     @abstractmethod
     def get_current_connections(self) -> dict:
         pass
 
 
+
+def compare_connections(prior: dict, current: dict) -> (dict, dict):
+    """
+    Determine new (and dropped) connections between prior and current connections
+
+    :param prior:
+    :param current:
+    :return:
+    """
+
+    new = _connection_diff(prior, current)
+    dropped = _connection_diff(current, prior)
+
+    return new, dropped
+
+
+def _connection_diff(a: dict, b: dict) -> dict:
+    """
+    Difference (a-b) between two dicts of connections
+
+    :param a:
+    :param b:
+    :return:
+    """
+    dropped = defaultdict(dict)
+    for client, client_connections in b.items():
+        for real_address, details in client_connections.items():
+            if (client not in a or
+                    real_address not in a[client]):
+                dropped[client][real_address] = details
+    dropped = dict(dropped)
+
+    return dropped
