@@ -11,9 +11,9 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=6.0',
+requirements = ['Click>=7.0',
                 'toml==0.10.0',
-                'twilio==6.22.0',
+                'notifiers==1.0.3',
                 ]
 
 
