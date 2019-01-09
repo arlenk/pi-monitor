@@ -1,6 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
+
 from pivpn_monitor.core import Event
+from typing import List
 
 
 class ClientMonitor(metaclass=ABCMeta):
@@ -23,7 +25,12 @@ class ClientMonitor(metaclass=ABCMeta):
         """
         self.listeners[name] = action
 
-    def run(self):
+    def run(self) -> List[Event]:
+        """
+        Run monitor to look for any new Events
+
+        :return:
+        """
         prior = self.connections
         current = self.get_current_connections()
         self.connections = current
