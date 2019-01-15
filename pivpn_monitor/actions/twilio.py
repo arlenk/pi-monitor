@@ -1,6 +1,5 @@
+import twilio.rest as tr
 from pivpn_monitor.core import Event
-import notifiers
-tw = notifiers.get_notifier("twilio")
 
 
 class Twilio():
@@ -14,16 +13,19 @@ class Twilio():
 
     def act(self, event: Event):
         print("{} acting on {}".format(__name__, event))
-        message = "pivpn update\n" + event.message
-        response = tw.notify(
-            message=message,
-            to=self.to_phone,
-            from_=self.from_phone,
-            account_sid=self.account_sid,
-            auth_token=self.auth_token,
+
+        client = tr.Client(
+            self.account_sid,
+            self.auth_token
         )
 
-        return response
+        message = client.messages.create(
+            to=self.to_phone,
+            from_=self.from_phone,
+            body="pivpn update\n" + event.message
+        )
+
+        return message
 
 
 def _process_config(config):

@@ -13,7 +13,7 @@ with open('HISTORY.rst') as history_file:
 
 requirements = ['Click>=7.0',
                 'toml==0.10.0',
-                'notifiers==1.0.3',
+                'twilio==6.22.0',
                 ]
 
 
