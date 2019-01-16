@@ -1,4 +1,4 @@
-import socket
+import telnetlib
 from collections import defaultdict
 from typing import List
 
@@ -13,9 +13,10 @@ class ManagementInterfaceMonitor(ClientMonitor):
 
     def __init__(self, config):
         config = process_config(config,
-                                required_fields=['management_port'])
-        self._openvpn_management_host = config.get("management_host", "localhost")
-        self._openvpn_management_port = config.get("management_port")
+                                required_fields=['port'])
+        self.host = config.get("host", "localhost")
+        self.port = config.get("port")
+        self.timeout = config.get("timeout", 5)
 
         super().__init__(config)
 
@@ -26,24 +27,21 @@ class ManagementInterfaceMonitor(ClientMonitor):
 
         """
         try:
-            s = socket.create_connection(
-                (self._openvpn_management_host, self._openvpn_management_port),
-                10
+            tn = telnetlib.Telnet(
+                host=self.host,
+                port=self.port,
+                timeout=self.timeout
             )
+            tn.read_very_eager()
+            tn.write(b"status\n")
+            status = tn.read_until(b"END\r\n", timeout=self.timeout)
+
         except Exception as e:
             print("error connecting to management port: {}".format(e))
-            return dict()
-
-        s.settimeout(1)
-        try:
-            s.send("status")
-            status = s.recv(4 * 1024)
-        except Exception as e:
-            print("error reading status")
-            return dict()
-
+            raise
+        finally:
+            tn.close()
         status = status.decode('utf8')
-        print("received status: {}".format(status))
 
         connections = parse_openvpn_management_status(status)
         return connections
