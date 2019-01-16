@@ -15,7 +15,7 @@ class ProcessMonitor(ClientMonitor):
     def __init__(self, config):
         config = process_config(config,
                                 required_fields=['status_command'])
-        self._openvpn_status_process = config.get("status_command")
+        self.status_command = config.get("status_command")
 
         super().__init__(config)
 
@@ -24,7 +24,7 @@ class ProcessMonitor(ClientMonitor):
         List of users currently connected
 
         """
-        connections = call_openvpn_status_process(self._openvpn_status_process)
+        connections = call_openvpn_status_command(self.status_command)
         return connections
 
 
@@ -40,7 +40,7 @@ def process_config(config: dict, required_fields: List[str]) -> dict:
     return config
 
 
-def call_openvpn_status_process(status_command: str) -> dict:
+def call_openvpn_status_command(status_command: str) -> dict:
     """
     Call status command and parse list of currently connected clients from results
 
@@ -55,8 +55,6 @@ def call_openvpn_status_process(status_command: str) -> dict:
     print("command returned\n:{}".format(current_status))
 
     for line in current_status.splitlines():
-        print("processing line: {}".format(line))
-
         # remove escape characters (pivpn bolds some output)
         # re from https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python
         # todo: find better way to parse output of pivpn

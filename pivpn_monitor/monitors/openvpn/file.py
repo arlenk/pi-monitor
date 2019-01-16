@@ -14,7 +14,7 @@ class FileMonitor(ClientMonitor):
     def __init__(self, config):
         config = process_config(config,
                                 required_fields=['status_file'])
-        self._openvpn_status_file = config.get("status_file")
+        self.status_file = config.get("status_file")
 
         super().__init__(config)
 
@@ -23,7 +23,7 @@ class FileMonitor(ClientMonitor):
         List of users currently connected
 
         """
-        connections = read_openvpn_status_file(self._openvpn_status_file)
+        connections = read_openvpn_status_file(self.status_file)
         return connections
 
 
