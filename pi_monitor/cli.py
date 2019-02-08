@@ -3,7 +3,7 @@
 """Console script for pivpn_alerts."""
 import sys
 import click
-import pivpn_monitor.pivpn_monitor as pm
+import pi_monitor.pi_monitor as pm
 
 
 @click.command()

@@ -1,4 +1,4 @@
-from pivpn_monitor.core import Event
+from pi_monitor.core import Event
 import sendgrid
 from sendgrid.helpers.mail import Content, Email, Mail
 from python_http_client import exceptions

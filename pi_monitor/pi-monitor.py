@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import time
 
-import pivpn_monitor.configuration.config as cc
+import pi_monitor.configuration.config as cc
 
 
 """Main module."""
 def main():
-    config = cc.load_configuration("pi-monitor.cfg", ".env")
+    config = cc.load_configuration("pi_monitor.cfg", ".env")
     monitors = config['monitors']
     actions = config['actions']
 

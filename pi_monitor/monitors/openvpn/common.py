@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
 
-from pivpn_monitor.core import Event
+from pi_monitor.core import Event
 from typing import List
 
 

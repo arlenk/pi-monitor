@@ -1,5 +1,5 @@
 import twilio.rest as tr
-from pivpn_monitor.core import Event
+from pi_monitor.core import Event
 
 
 class Twilio():

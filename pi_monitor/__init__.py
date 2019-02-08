@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for pi-monitor."""
+"""Top-level package for pi_monitor."""
 
 __author__ = """arlenk"""
 __email__ = 'audreyr@example.com'
