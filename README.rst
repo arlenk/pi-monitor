@@ -1,32 +1,39 @@
 ============
-pivpn-monitor
+pi-monitor
 ============
 
 
-.. image:: https://img.shields.io/pypi/v/pivpn_alerts.svg
-        :target: https://pypi.python.org/pypi/pivpn_alerts
+.. image:: https://img.shields.io/pypi/v/pi-monitor.svg
+        :target: https://pypi.python.org/pypi/pi-monitor
 
-.. image:: https://img.shields.io/travis/arlenk/pivpn_alerts.svg
-        :target: https://travis-ci.org/arlenk/pivpn_alerts
+.. image:: https://img.shields.io/travis/arlenk/pi-monitor.svg
+        :target: https://travis-ci.org/arlenk/pi-monitor
 
-.. image:: https://readthedocs.org/projects/pivpn-monitor/badge/?version=latest
-        :target: https://pivpn-monitor.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/pi-monitor/badge/?version=latest
+        :target: https://pi-monitor.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 
 
-
-send alerts (sms, email, etc.) when a client connects to your pivpn/openvpn server
+Monitor raspberry pi for events (eg, high cpu load, pivpn connections, etc) and
+        send alerts alerts (sms, email, etc.) based on events.
 
 
 * Free software: MIT license
-* Documentation: https://pivpn-monitor.readthedocs.io.
+* Documentation: https://pi-monitor.readthedocs.io.
 
 
 Features
 --------
 
 * TODO
+- use python notifiers library (requires python 3.6)
+- logging
+- convert into a service/daemon
+- openvpn telnet monitor
+- app wide preferences
+- use async monitors & actions
+
 
 Credits
 -------
