@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 
-import pi_monitor.configuration.config as cc
+import pi_monitor.configuration.main as cc
 
 
 """Main module."""
