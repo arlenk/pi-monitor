@@ -14,7 +14,8 @@ with open('HISTORY.rst') as history_file:
 requirements = ['Click>=7.0',
                 'toml==0.10.0',
                 'twilio==6.22.0',
-                'sendgrid>=5.6.0'
+                'sendgrid>=5.6.0',
+                'psutil>=5.6',
                 ]
 
 

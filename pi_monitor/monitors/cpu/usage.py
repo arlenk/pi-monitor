@@ -1,24 +1,20 @@
-import os
-from pathlib import Path
+import psutil
 from typing import List
 
 from pi_monitor.core import Event
 
 
-class FreeSpaceMonitor():
+class CPUUsageMonitor:
     """
-    Monitor free disk space
+    Monitor CPU Usage
 
     """
 
     def __init__(self, config):
         config = process_config(config,
-                                required_fields=['path',
-                                                 'minimum_space'])
-        self.path = config.get("path")
-        self.minimum_space = config.get("minimum_space")
-        self.minimum_bytes = config.get("minimum_bytes")
-
+                                required_fields=['maximum_usage',
+                                                 ])
+        self.maximum_usage = config.get("maximum_usage")
         self.listeners = dict()
 
     def add_listener(self, name: str, action):
@@ -37,13 +33,13 @@ class FreeSpaceMonitor():
 
         :return:
         """
-        free_bytes = get_free_bytes(self.path)
-        minimum_free_bytes = self.minimum_bytes
+        usage = get_cpu_usage()
+        maximum_usage = self.maximum_usage
+
         events = []
-        print("current free bytes: {}".format(free_bytes))
-        if free_bytes <= minimum_free_bytes:
-            message = ("free space ({} bytes) below minimum "
-                       "threshold ({})".format(free_bytes, self.minimum_space))
+        print(f"current cpu usage: {usage}")
+        if usage >= maximum_usage:
+            message = f"cpu usage ({usage}%) above maximum threshold ({maximum_usage})"
 
             events.append(
                 Event(message)
@@ -52,17 +48,14 @@ class FreeSpaceMonitor():
         return events
 
 
-def get_free_bytes(path: Path) -> float:
+def get_cpu_usage() -> float:
     """
-    Get free bytes
+    Get current cpu usage
 
     """
-    import os
-    statvfs = os.statvfs(path)
+    usage = psutil.cpu_percent()
 
-    free_bytes = statvfs.f_bavail * statvfs.f_frsize
-
-    return free_bytes
+    return usage
 
 
 def process_config(config: dict, required_fields: List[str]) -> dict:
@@ -74,45 +67,11 @@ def process_config(config: dict, required_fields: List[str]) -> dict:
         if field not in config:
             raise ValueError("required field {} not found in config file".format(field))
 
-    path = Path(config['path'])
-    if not path.exists():
-        raise ValueError("could not find target path: {}".format(path))
-    config['path'] = path
+    maximum_usage = config['maximum_usage']
 
-    minimum_space = config['minimum_space']
-    minimum_bytes = _string_to_bytes(minimum_space)
+    if not 1 < maximum_usage < 100:
+        raise ValueError(f"maximum_usage should be between 1 and 100")
 
-    # keep minimum space around for reporting
-    config['minimum_space'] = minimum_space
-    config['minimum_bytes'] = minimum_bytes
+    config['maximum_usage'] = float(maximum_usage)
 
     return config
-
-
-def _string_to_bytes(s: str):
-    """
-    Convert string representation of disk space into bytes
-
-    :param s: str
-    :return: float
-    """
-    s = s.replace(' ', '')
-    num, unit = s[:-1], s[-1]
-    num = float(num)
-
-    unit_multiplier = {
-        'B': 1.0,
-        'K': 1024.0,
-        'M': 1024.0 * 1024.0,
-        'G': 1024.0 * 1024.0 * 1000,
-        'T': 1024.0 * 1024.0 * 1000 * 1000,
-        'P': 1024.0 * 1024.0 * 1000 * 1000 * 1000,
-    }
-
-    if unit not in unit_multiplier:
-        raise ValueError("unknown unit: {}".format(unit))
-
-    multiplier = unit_multiplier[unit]
-
-    bytes = num * multiplier
-    return bytes

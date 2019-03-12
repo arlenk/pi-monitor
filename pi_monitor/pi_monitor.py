@@ -6,7 +6,7 @@ import pi_monitor.configuration.main as cc
 
 """Main module."""
 def main():
-    config = cc.load_configuration("pi_monitor.cfg", ".env")
+    config = cc.load_configuration("pi-monitor.cfg", ".env")
     monitors = config['monitors']
     actions = config['actions']
 

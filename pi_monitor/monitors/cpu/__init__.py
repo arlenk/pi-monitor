@@ -1,1 +1,1 @@
-from .free_space import FreeSpaceMonitor
+from .usage import CPUUsageMonitor
