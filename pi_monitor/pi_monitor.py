@@ -10,6 +10,8 @@ def main():
     monitors = config['monitors']
     actions = config['actions']
     general = config['general']
+    logger = pml.get_logger()
+
 
     while True:
         time.sleep(60)
