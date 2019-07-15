@@ -18,8 +18,9 @@ def set_logger(log_level, log_file=None):
     logger.addHandler(stream_handler)
 
     # optionally create a file handler as well
+    # TODO: make sure log_file is valid and writable
     if log_file:
-        file_handler = logging.FileHandler('file.log')
+        file_handler = logging.FileHandler(log_file)
         file_handler.setLevel(log_level)
         formatter = logging.Formatter('%(asctime)s - %(name)s - '
                                       '%(levelname)s - %(message)s')
