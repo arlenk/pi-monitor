@@ -9,6 +9,7 @@ def main():
     config = cc.load_configuration("pi-monitor.cfg", ".env")
     monitors = config['monitors']
     actions = config['actions']
+    general = config['general']
 
     while True:
         time.sleep(60)
