@@ -4,6 +4,7 @@ Load monitors, actions, etc. specified in config files
 """
 import importlib
 import copy
+import pi_monitor.logger as pml
 
 
 def load_monitors(config):
@@ -13,6 +14,8 @@ def load_monitors(config):
     :param config: dict
     :return: dict
     """
+    logger = pml.get_logger()
+
     # TODO: move validation to its own function
     if 'monitors' not in config:
         raise ValueError("no monitors defined i config file!")
@@ -21,7 +24,7 @@ def load_monitors(config):
     monitors = dict()
 
     for name, values in config.items():
-        print("loading: {}".format(name))
+        logger.debug(f"loading: {name}")
         if 'class' not in values:
             raise ValueError("no class defined for monitor {}".format(name))
 
@@ -40,6 +43,8 @@ def load_actions(config):
     :param config: dict
     :return: dict
     """
+    logger = pml.get_logger()
+
     # TODO: move validation to its own function
     if 'actions' not in config:
         raise ValueError("no actions defined i config file!")
@@ -48,7 +53,7 @@ def load_actions(config):
     actions = dict()
 
     for name, values in config.items():
-        print("loading: {}".format(name))
+        logger.debug(f"loading: {name}")
         if 'class' not in values:
             raise ValueError("no class defined for monitor {}".format(name))
 
@@ -67,9 +72,10 @@ def _try_importing_class(name):
     :param name:
     :return:
     """
+    logger = pml.get_logger()
 
     module, cls = name.rsplit('.', 1)
-    print("trying to import module: {}".format(module))
+    logger.debug(f"trying to import module: {module}")
 
     # TODO: how do we avoid hardcoding this
     module = "pi_monitor.{}".format(module)
